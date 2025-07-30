@@ -1,10 +1,12 @@
-    # pages/funnel_overview.py
+# pages/1_funnel_overview.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from chat_helpers import ask_gpt, summarize_funnel_metrics
 
+# Must be first thing called
 st.set_page_config(page_title="Funnel Overview", layout="wide")
+
 st.title("🪣 Funnel Overview")
 
 # Get shared data from app.py
@@ -18,6 +20,7 @@ if df.empty:
 inquiries = len(df[df['Person Status'] == 'Inquiry'])
 applicants = len(df[df['Person Status'] == 'Applicant'])
 enrolled = len(df[df['Person Status'] == 'Enrolled'])
+
 stacked = st.sidebar.checkbox("📱 Mobile View", value=True)
 
 if stacked:
@@ -30,7 +33,7 @@ else:
     col2.metric("📄 Applicants", applicants)
     col3.metric("🎓 Enrolled", enrolled)
 
-# Visualizations
+# Funnel bar chart
 funnel_data = pd.DataFrame({
     "Stage": ["Inquiry", "Applicant", "Enrolled"],
     "Count": [inquiries, applicants, enrolled]
@@ -40,33 +43,32 @@ funnel_fig = px.bar(funnel_data, x="Count", y="Stage", text="Count", color="Stag
 funnel_fig.update_traces(textposition='outside')
 st.plotly_chart(funnel_fig, use_container_width=True)
 
-# More visualizations below...
-# (You already have this logic)
+# Leads Over Time
+leads_over_time = df[df['Person Status'].isin(['Inquiry', 'Applicant', 'Enrolled'])]
+leads_over_time = leads_over_time.dropna(subset=["Ping Timestamp"])
+fig = px.histogram(leads_over_time, x="Ping Timestamp", color="Person Status", barmode="group",
+                   title="Leads Over Time", color_discrete_sequence=gsu_colors)
+st.plotly_chart(fig, use_container_width=stacked, config={'displayModeBar': False})
 
-    
-    leads_over_time = filtered_df[filtered_df['Person Status'].isin(['Inquiry', 'Applicant', 'Enrolled'])]
-    leads_over_time = leads_over_time.dropna(subset=["Ping Timestamp"])
-    fig = px.histogram(leads_over_time, x="Ping Timestamp", color="Person Status", barmode="group",
-                       title="Leads Over Time", color_discrete_sequence=gsu_colors)
-    st.plotly_chart(fig, use_container_width=stacked, config={'displayModeBar': False})
+# Leads by Term
+df_term = df.copy()
+df_term["Term"] = df_term["Applications Applied Term"].combine_first(df_term.get("Person Inquiry Term"))
+df_term = df_term[df_term["Person Status"].isin(["Inquiry", "Applicant", "Enrolled"])]
+df_term = df_term[df_term["Term"].notna() & (df_term["Term"].astype(str).str.strip().str.lower() != "nan")]
+term_counts = df_term.groupby(["Term", "Person Status"]).size().reset_index(name="Count")
 
-    df_term = filtered_df.copy()
-    df_term["Term"] = df_term["Applications Applied Term"].combine_first(df_term.get("Person Inquiry Term"))
-    df_term = df_term[df_term["Person Status"].isin(["Inquiry", "Applicant", "Enrolled"])]
-    df_term = df_term[df_term["Term"].notna() & (df_term["Term"].astype(str).str.strip().str.lower() != "nan")]
-    term_counts = df_term.groupby(["Term", "Person Status"]).size().reset_index(name="Count")
+fig = px.bar(term_counts, x="Term", y="Count", color="Person Status", barmode="group",
+             title="Leads by Term", color_discrete_sequence=gsu_colors)
+st.plotly_chart(fig, use_container_width=stacked, config={'displayModeBar': False})
 
-    fig = px.bar(term_counts, x="Term", y="Count", color="Person Status", barmode="group",
-                 title="Leads by Term", color_discrete_sequence=gsu_colors)
-    st.plotly_chart(fig, use_container_width=stacked, config={'displayModeBar': False})
-
-    if st.sidebar.checkbox("🧠 Show Page Summary", value=False):
-        st.markdown("### 🧠 Summary")
-        with st.spinner("Summarizing Page 1..."):
-            summary_input = summarize_funnel_metrics(filtered_df)
-            summary = ask_gpt(
-                prompt=f"Provide a funnel drop-off summary using this data:\n\n{summary_input}",
-                system_prompt="You are a data analyst providing a brief summary of the data."
-            )
-            if summary:
-                st.info(summary)
+# GPT Summary
+if st.sidebar.checkbox("🧠 Show Page Summary", value=False):
+    st.markdown("### 🧠 Summary")
+    with st.spinner("Summarizing Page 1..."):
+        summary_input = summarize_funnel_metrics(df)
+        summary = ask_gpt(
+            prompt=f"Provide a funnel drop-off summary using this data:\n\n{summary_input}",
+            system_prompt="You are a data analyst providing a brief summary of the data."
+        )
+        if summary:
+            st.info(summary)
