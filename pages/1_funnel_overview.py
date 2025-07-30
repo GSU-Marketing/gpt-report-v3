@@ -8,6 +8,12 @@ st.set_page_config(page_title="Funnel Overview", layout="wide")
 st.title("🪣 Funnel Overview")
 
 
+df = st.session_state.get("filtered_df", pd.DataFrame())
+
+if df.empty:
+    st.warning("No data loaded or filtered. Please return to Home and check your filters.")
+    st.stop()
+
 def render(filtered_df, gsu_colors):
     st.subheader("🪣 Funnel Overview")
 
