@@ -3,6 +3,11 @@ import pandas as pd
 import plotly.express as px
 from chat_helpers import ask_gpt, summarize_funnel_metrics
 
+st.set_page_config(page_title="Funnel Overview", layout="wide")
+
+st.title("🪣 Funnel Overview")
+
+
 def render(filtered_df, gsu_colors):
     st.subheader("🪣 Funnel Overview")
 
