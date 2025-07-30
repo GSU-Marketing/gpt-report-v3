@@ -1,0 +1,13 @@
+streamlit
+gspread
+oauth2client
+pandas
+numpy
+openai
+plotly
+requests
+us
+google-auth
+google-api-python-client
+streamlit-javascript
+streamlit-folium
