@@ -1,46 +1,49 @@
+    # pages/funnel_overview.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from chat_helpers import ask_gpt, summarize_funnel_metrics
 
 st.set_page_config(page_title="Funnel Overview", layout="wide")
-
 st.title("🪣 Funnel Overview")
 
-
+# Get shared data from app.py
 df = st.session_state.get("filtered_df", pd.DataFrame())
+gsu_colors = st.session_state.get("gsu_colors", ["#0039A6", "#0078D7", "#00B0F0"])
 
 if df.empty:
     st.warning("No data loaded or filtered. Please return to Home and check your filters.")
     st.stop()
 
-def render(filtered_df, gsu_colors):
-    st.subheader("🪣 Funnel Overview")
+inquiries = len(df[df['Person Status'] == 'Inquiry'])
+applicants = len(df[df['Person Status'] == 'Applicant'])
+enrolled = len(df[df['Person Status'] == 'Enrolled'])
+stacked = st.sidebar.checkbox("📱 Mobile View", value=True)
 
-    inquiries = len(filtered_df[filtered_df['Person Status'] == 'Inquiry'])
-    applicants = len(filtered_df[filtered_df['Person Status'] == 'Applicant'])
-    enrolled = len(filtered_df[filtered_df['Person Status'] == 'Enrolled'])
-    stacked = st.sidebar.checkbox("📱 Mobile View", value=True)
+if stacked:
+    st.metric("🧠 Inquiries", inquiries)
+    st.metric("📄 Applicants", applicants)
+    st.metric("🎓 Enrolled", enrolled)
+else:
+    col1, col2, col3 = st.columns(3)
+    col1.metric("🧠 Inquiries", inquiries)
+    col2.metric("📄 Applicants", applicants)
+    col3.metric("🎓 Enrolled", enrolled)
 
-    if stacked:
-        st.metric("🧠 Inquiries", inquiries, help="Total number of inquiries", height=90)
-        st.metric("📄 Applicants", applicants, help="Total number of applicants", height=90)
-        st.metric("🎓 Enrolled", enrolled, help="Total number of enrollments", height=90)
-    else:
-        col1, col2, col3 = st.columns(3)
-        col1.metric("🧠 Inquiries", inquiries, help="Total number of inquiries", height=90)
-        col2.metric("📄 Applicants", applicants, help="Total number of applicants", height=90)
-        col3.metric("🎓 Enrolled", enrolled, help="Total number of enrollments", height=90)
+# Visualizations
+funnel_data = pd.DataFrame({
+    "Stage": ["Inquiry", "Applicant", "Enrolled"],
+    "Count": [inquiries, applicants, enrolled]
+})
+funnel_fig = px.bar(funnel_data, x="Count", y="Stage", text="Count", color="Stage",
+                    title="Lead Funnel", color_discrete_sequence=gsu_colors, orientation="h")
+funnel_fig.update_traces(textposition='outside')
+st.plotly_chart(funnel_fig, use_container_width=True)
 
-    funnel_data = pd.DataFrame({
-        "Stage": ["Inquiry", "Applicant", "Enrolled"],
-        "Count": [inquiries, applicants, enrolled]
-    })
-    funnel_fig = px.bar(funnel_data, x="Count", y="Stage", text="Count", color="Stage",
-                        title="Lead Funnel", color_discrete_sequence=gsu_colors, orientation="h")
-    funnel_fig.update_traces(textposition='outside')
-    st.plotly_chart(funnel_fig, use_container_width=stacked, config={'displayModeBar': False})
+# More visualizations below...
+# (You already have this logic)
 
+    
     leads_over_time = filtered_df[filtered_df['Person Status'].isin(['Inquiry', 'Applicant', 'Enrolled'])]
     leads_over_time = leads_over_time.dropna(subset=["Ping Timestamp"])
     fig = px.histogram(leads_over_time, x="Ping Timestamp", color="Person Status", barmode="group",
