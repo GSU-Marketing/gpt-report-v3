@@ -1,6 +1,4 @@
 import streamlit as st
-st.set_page_config(layout="wide")
-import streamlit as st
 import pandas as pd
 import plotly.express as px
 from chat_helpers import ask_gpt, summarize_funnel_metrics
