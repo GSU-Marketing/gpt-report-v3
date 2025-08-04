@@ -116,5 +116,4 @@ page_names = {
 }
 
 
-# Render the selected page
-selected_page.render(filtered_df, gsu_colors)
+
