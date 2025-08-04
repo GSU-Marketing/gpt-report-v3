@@ -1,6 +1,4 @@
 import streamlit as st
-st.set_page_config(layout="wide")
-import streamlit as st
 import pandas as pd
 from data_loaders import get_gsheet_client
 
