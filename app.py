@@ -115,8 +115,6 @@ page_names = {
     "Page 5: Admin Dashboard": admin_dashboard,
 }
 
-view = st.sidebar.selectbox("Select Dashboard Page", list(page_names.keys()))
-selected_page = page_names[view]
 
 # Render the selected page
 selected_page.render(filtered_df, gsu_colors)
