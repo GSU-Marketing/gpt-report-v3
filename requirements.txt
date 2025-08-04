@@ -8,3 +8,4 @@ us
 google-api-python-client
 gspread
 oauth2client
+tiktoken
