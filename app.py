@@ -10,7 +10,8 @@ from data_loaders import (
 )
 from geo_utils import get_geoip_reader, enrich_geo_fields
 from chat_helpers import ask_gpt, get_compressed_csv
-from dashboard_pages import funnel_overview
+st.success("👈 Use the sidebar to navigate the dashboard pages.")
+
 
 st.set_page_config(layout="wide")
 
