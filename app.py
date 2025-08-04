@@ -10,14 +10,7 @@ from data_loaders import (
 )
 from geo_utils import get_geoip_reader, enrich_geo_fields
 from chat_helpers import ask_gpt, get_compressed_csv
-from dashboard_pages import (
-    funnel_overview,
-    programs_registration,
-    engagement_channels,
-    geographic_insights,
-    admin_dashboard
-)
-
+from dashboard_pages import funnel_overview
 
 st.set_page_config(layout="wide")
 
@@ -107,13 +100,9 @@ if user_question:
             st.sidebar.write(answer)
 
 # Page router
-page_names = {
-    "Page 1: Funnel Overview": funnel_overview,
-    "Page 2: Programs Registration": programs_registration,
-    "Page 3: Engagement Channels": engagement_channels,
-    "Page 4: Geographic Insights": geographic_insights,
-    "Page 5: Admin Dashboard": admin_dashboard,
-}
+view = st.sidebar.selectbox("Select Dashboard Page", [
+    "Page 1: Funnel Overview"
+])
 
-
-
+if view == "Page 1: Funnel Overview":
+    funnel_overview.render(filtered_df, gsu_colors)

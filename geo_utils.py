@@ -55,8 +55,3 @@ def enrich_geo_fields(df, reader):
     for col in ["Zip Code", "city", "region", "country"]:
         df[col] = enriched[col]
     return df
-
-def load_us_states_geojson():
-    import json
-    with open("us-states.json", "r") as f:
-        return json.load(f)
