@@ -1,6 +1,17 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+
+if "filtered_df" not in st.session_state or "gsu_colors" not in st.session_state:
+    st.error("❌ Data not loaded. Please return to the home page to initialize data.")
+    st.stop()
+
+filtered_df = st.session_state["filtered_df"]
+gsu_colors = st.session_state["gsu_colors"]
+
+import streamlit as st
+import pandas as pd
+import plotly.express as px
 import us
 from streamlit_folium import st_folium
 import folium
