@@ -5,7 +5,9 @@ from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filte
 st.set_page_config(page_title="PantherMetrics", layout="wide")
 
 # Branding
-st.image("logo.png", width=160)
+import os
+if os.path.exists("logo.png"):
+    st.image("logo.png", width=160)
 st.markdown("## GPT-Powered Graduate-Marketing Data Explorer")
 
 # Session ID
