@@ -1,4 +1,6 @@
 import streamlit as st
+from session_initializer import initialize_session
+initialize_session()
 import pandas as pd
 import plotly.express as px
 
@@ -10,6 +12,8 @@ filtered_df = st.session_state["filtered_df"]
 gsu_colors = st.session_state["gsu_colors"]
 
 import streamlit as st
+from session_initializer import initialize_session
+initialize_session()
 import pandas as pd
 import plotly.express as px
 from chat_helpers import ask_gpt, summarize_funnel_metrics
