@@ -49,7 +49,11 @@ if "filtered_df" not in st.session_state:
         selected_status = "All"
         selected_term = "All"
 
-        st.session_state["filtered_df"] = get_filtered_data(df, selected_program, selected_status, selected_term)
+        filtered = get_filtered_data(df, selected_program, selected_status, selected_term)
+        st.session_state["filtered_df"] = filtered
+
+        st.write("🔎 Filtered data preview:")
+        st.dataframe(filtered.head())
 
     except Exception as e:
         st.error("❌ Failed to load dataset.")
