@@ -41,6 +41,10 @@ if "filtered_df" not in st.session_state:
     try:
         st.write("📦 Loading data from Google Drive...")
         df = load_data_from_gdrive()
+
+        st.write("📊 Raw data shape:", df.shape)
+        st.dataframe(df.head())
+
         df = preprocess_timestamps(df)
         st.write("✅ Data loaded and preprocessed")
 
