@@ -6,6 +6,15 @@ st.set_page_config(page_title="PantherMetrics", layout="wide")
 
 st.write("✅ app.py loaded")
 
+# Check secrets
+try:
+    st.write("🔐 GCP Client Email:", st.secrets["gcp"]["client_email"])
+    st.write("📄 GDrive File ID:", st.secrets["gdrive"]["file_id"])
+except Exception as e:
+    st.error("❌ GCP or GDrive secrets missing or invalid.")
+    st.exception(e)
+    st.stop()
+
 try:
     from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filtered_data
     st.write("✅ data_loaders imported")
