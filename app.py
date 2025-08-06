@@ -1,22 +1,23 @@
 import streamlit as st
-st.write("✅ App started")
-
-try:
-    from data_loaders import load_data_from_gdrive
-    st.write("✅ data_loaders imported")
-except Exception as e:
-    st.error(f"❌ Failed to import data_loaders: {e}")
-
-import streamlit as st
 import uuid
-from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filtered_data
+import os
 
 st.set_page_config(page_title="PantherMetrics", layout="wide")
 
+st.write("✅ app.py loaded")
+
+try:
+    from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filtered_data
+    st.write("✅ data_loaders imported")
+except Exception as e:
+    st.error("❌ Failed to import data_loaders")
+    st.exception(e)
+    st.stop()
+
 # Branding
-import os
 if os.path.exists("logo.png"):
     st.image("logo.png", width=160)
+
 st.markdown("## GPT-Powered Graduate-Marketing Data Explorer")
 
 # Session ID
@@ -29,8 +30,10 @@ st.session_state["gsu_colors"] = ['#0055CC', '#00A3AD', '#FDB913', '#C8102E']
 # Load and cache data
 if "filtered_df" not in st.session_state:
     try:
+        st.write("📦 Loading data from Google Drive...")
         df = load_data_from_gdrive()
         df = preprocess_timestamps(df)
+        st.write("✅ Data loaded and preprocessed")
 
         # Default filter setup
         selected_program = "All"
@@ -43,4 +46,4 @@ if "filtered_df" not in st.session_state:
         st.error("❌ Failed to load dataset.")
         st.exception(e)
 
-st.success("👈 Use the sidebar to navigate the dashboard pages.")
+st.success("App booted successfully ✅")
