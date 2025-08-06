@@ -1,4 +1,13 @@
 import streamlit as st
+st.write("✅ App started")
+
+try:
+    from data_loaders import load_data_from_gdrive
+    st.write("✅ data_loaders imported")
+except Exception as e:
+    st.error(f"❌ Failed to import data_loaders: {e}")
+
+import streamlit as st
 import uuid
 from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filtered_data
 
