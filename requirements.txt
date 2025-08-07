@@ -3,6 +3,7 @@ pandas
 plotly
 openai
 folium
+streamlit
 streamlit-folium
 us
 google-api-python-client
