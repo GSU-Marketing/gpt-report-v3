@@ -2,7 +2,7 @@ import streamlit as st
 import uuid
 import os
 
-st.set_page_config(page_title="PantherMetrics", layout="wide")
+st.set_page_config(page_title="PIPELINE DEVELOPER", layout="wide")
 
 # Import modules
 from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filtered_data
@@ -11,7 +11,22 @@ from data_loaders import load_data_from_gdrive, preprocess_timestamps, get_filte
 if os.path.exists("logo.png"):
     st.image("logo.png", width=160)
 
-st.markdown("## GPT-Powered Graduate-Marketing Data Explorer")
+st.markdown("# PIPELINE DEVELOPER RESEARCH LAB")
+st.markdown("**Applied research, analytics, and AI tools for small businesses and growing organizations.**")
+
+st.markdown("### Services")
+st.markdown("""
+- Market and product research (demand, competition, pricing)  
+- Lead pipeline research (lists, segmentation, validation)  
+- Data dashboards and analytics apps (cloud-based)  
+- Custom GPT tools for internal workflows  
+- Proposal-based research funding pilots  
+""")
+
+st.markdown("### Contact / Intake")
+st.markdown("Request a proposal: **kulturemetrics.io/contact**  •  Email: **pipelinedeveloper.inc@gmail.com**")
+
+
 
 # Session ID
 if "session_id" not in st.session_state:
